@@ -6,6 +6,7 @@ import { BaseRepository, Repository } from '../base';
 import { Identity } from './identity.model';
 import IdentitySchema from './identity.schema';
 import env from '@app/common/config/env';
+import { InvalidTokenError } from '@app/common/errors';
 
 export interface IIdentityRepository extends Repository<Identity> {
   /**
@@ -75,6 +76,20 @@ export class IdentityRepository extends BaseRepository<Identity> {
       issuer: 'climedo'
     });
     return token;
+  }
+
+  /**
+   * Verifies the validity of a token
+   * @param token
+   * @returns
+   */
+  verifyToken(token: string): any {
+    try {
+      const decoded = jwt.verify(token, env.jwt_secret);
+      return decoded;
+    } catch (error) {
+      throw new InvalidTokenError();
+    }
   }
 
   /**

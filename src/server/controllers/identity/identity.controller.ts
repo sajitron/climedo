@@ -1,19 +1,21 @@
 import {
   controller,
   httpPost,
+  httpPut,
   request,
   requestBody,
   response
 } from 'inversify-express-utils';
 import { inject } from 'inversify';
 import { Request, Response } from 'express';
-import { BaseController } from '../base';
-import { LoginDTO, SignupDTO } from './identity.dto';
-import { login, signup } from './identity.validator';
+import { ActionNotAllowedError, BaseController } from '../base';
+import { LoginDTO, SignupDTO, UpdateIdentityDTO } from './identity.dto';
+import { login, signup, updateIdentity } from './identity.validator';
 import { default as Validator } from '@app/server/middlewares/validator';
 import { IIdentityRepository } from '@app/data/identity';
 import { IOC_TYPES } from '@app/common/config/ioc-types';
 import { LoginrateLimiterService } from '@app/server/services';
+import { validateIdentity } from '@app/server/middlewares/validateIdentity';
 
 @controller('/identity')
 export default class IdentityController extends BaseController {
@@ -76,6 +78,36 @@ export default class IdentityController extends BaseController {
       const token = await this.identityRepo.generateToken(identity);
 
       this.handleSuccess(req, res, { updatedIdentity, token });
+    } catch (err) {
+      this.handleError(req, res, err);
+    }
+  }
+
+  /**
+   * Updates an identity's profile
+   */
+  @httpPut('/', validateIdentity, Validator(updateIdentity))
+  async updateUser(
+    @request() req: Request,
+    @response() res: Response,
+    @requestBody() body: UpdateIdentityDTO
+  ) {
+    try {
+      const update = { ...body };
+
+      if (!Object.keys(update).length) {
+        throw new ActionNotAllowedError('At least one field should be updated');
+      }
+
+      if (body.email) {
+        update['email'] = await this.identityRepo.sanitiseAndValidateEmail(
+          body.email
+        );
+      }
+
+      const user = await this.identityRepo.update(req.user._id, update);
+
+      this.handleSuccess(req, res, user);
     } catch (err) {
       this.handleError(req, res, err);
     }

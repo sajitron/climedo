@@ -65,3 +65,12 @@ export class AccountNotFoundError extends ControllerError {
     this.error_code = 706;
   }
 }
+
+export class InvalidTokenError extends ControllerError {
+  constructor() {
+    const errorMessage = `invalid token`;
+    super(errorMessage);
+
+    this.code = HttpStatus.UNAUTHORIZED;
+  }
+}

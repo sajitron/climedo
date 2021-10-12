@@ -30,11 +30,10 @@ export interface UpdatePasswordDTO {
 /**
  * Payload sent for updating an identity's profile
  */
-export interface UpdateProfileDTO {
+export interface UpdateIdentityDTO {
   first_name?: string;
   last_name?: string;
   email?: string;
-  role?: Role;
   dob?: Date;
 }
 

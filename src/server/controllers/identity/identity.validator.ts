@@ -13,3 +13,10 @@ export const login = joi.object({
   email: joi.string().email().required(),
   password: joi.string().trim().min(6).required()
 });
+
+export const updateIdentity = joi.object({
+  first_name: joi.string().trim(),
+  last_name: joi.string().trim(),
+  email: joi.string().email().trim(),
+  dob: joi.date()
+});
