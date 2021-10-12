@@ -11,7 +11,8 @@ const IdentitySchema = SchemaFactory({
   last_name: { ...trimmedString, index: true },
   dob: { type: SchemaTypes.Date },
   last_login: { type: SchemaTypes.Date },
-  role: { ...trimmedString, enum: ['user', 'admin'] }
+  role: { ...trimmedString, enum: ['user', 'admin'] },
+  token: { ...trimmedString, default: null, select: false }
 });
 
 /**

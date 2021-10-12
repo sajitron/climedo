@@ -42,6 +42,8 @@ export default class IdentityController extends BaseController {
 
       const data = { identity, token };
 
+      await this.identityRepo.update(identity._id, { token });
+
       this.handleSuccess(req, res, data);
     } catch (err) {
       this.handleError(req, res, err);
@@ -73,11 +75,12 @@ export default class IdentityController extends BaseController {
 
       await LoginrateLimiterService.reset(identity.email);
 
-      const updatedIdentity = await this.identityRepo.update(identity._id, {
-        last_login: new Date()
-      });
-
       const token = await this.identityRepo.generateToken(identity);
+
+      const updatedIdentity = await this.identityRepo.update(identity._id, {
+        last_login: new Date(),
+        token
+      });
 
       this.handleSuccess(req, res, { updatedIdentity, token });
     } catch (err) {
@@ -128,6 +131,19 @@ export default class IdentityController extends BaseController {
     try {
       const user = await this.identityRepo.byID(req.user._id);
       this.handleSuccess(req, res, user);
+    } catch (err) {
+      this.handleError(req, res, err);
+    }
+  }
+
+  /**
+   * logs out an identity
+   */
+  @httpGet('/logout', validateIdentity)
+  async logout(@request() req: Request, @response() res: Response) {
+    try {
+      await this.identityRepo.update(req.user._id, { token: '' });
+      this.handleSuccess(req, res, { message: 'log out successful' });
     } catch (err) {
       this.handleError(req, res, err);
     }

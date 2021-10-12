@@ -45,9 +45,13 @@ export async function validateIdentity(
 
     const identity = identityRepo.verifyToken(token);
 
-    console.log({ identity });
+    const identityData = await identityRepo.byID(identity.user._id, '+token');
 
-    req.user = identity;
+    if (token !== identityData.token) {
+      throw new InvalidTokenError();
+    }
+
+    req.user = identity.user;
 
     next();
   } catch (error) {

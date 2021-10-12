@@ -10,6 +10,7 @@ export const readMapper = {
     versionKey: false,
     transform: (doc, ret, options) => {
       if (ret.password) delete ret.password;
+      if (ret.token) delete ret.token;
       return ret;
     }
   }

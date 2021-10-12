@@ -5,7 +5,7 @@ import bunyan from 'bunyan';
  * Prevents passwords, credit card details etc from being logged.
  * @param body HTTP request body
  */
-const removeSensitiveData = ({ password, ...body }) => body;
+const removeSensitiveData = ({ password, token, ...body }) => body;
 
 /**
  * Serializes an Express request for Bunyan logging
