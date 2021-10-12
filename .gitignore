@@ -6,3 +6,4 @@ node_modules
 .DS_Store
 .env.staging
 yarn-error.log
+logs.json

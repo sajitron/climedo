@@ -82,7 +82,7 @@ export default class IdentityController extends BaseController {
         token
       });
 
-      this.handleSuccess(req, res, { updatedIdentity, token });
+      this.handleSuccess(req, res, { identity: updatedIdentity, token });
     } catch (err) {
       this.handleError(req, res, err);
     }
@@ -91,12 +91,12 @@ export default class IdentityController extends BaseController {
   /**
    * Updates an identity's profile
    */
-  @httpPut('/', validateIdentity, Validator(updateIdentity))
+  @httpPut('/:id', validateIdentity, Validator(updateIdentity))
   async updateUser(
     @request() req: Request,
     @response() res: Response,
     @requestBody() body: UpdateIdentityDTO,
-    @requestParam() id: string
+    @requestParam('id') id: string
   ) {
     try {
       const update = { ...body };

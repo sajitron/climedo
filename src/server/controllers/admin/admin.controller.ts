@@ -21,7 +21,7 @@ import {
 } from '@app/server/middlewares/validateIdentity';
 
 @controller('/admin', validateIdentity, validateAdmin)
-export default class IdentityController extends BaseController {
+export default class AdminController extends BaseController {
   @inject(IOC_TYPES.IdentityRepository)
   identityRepo: IIdentityRepository;
 
@@ -33,7 +33,7 @@ export default class IdentityController extends BaseController {
     @request() req: Request,
     @response() res: Response,
     @requestBody() body: UpdateIdentityDTO,
-    @requestParam() id: string
+    @requestParam('id') id: string
   ) {
     try {
       const update = { ...body };
@@ -48,9 +48,9 @@ export default class IdentityController extends BaseController {
         );
       }
 
-      const user = await this.identityRepo.update(id, update);
+      const identity = await this.identityRepo.update(id, update);
 
-      this.handleSuccess(req, res, user);
+      this.handleSuccess(req, res, identity);
     } catch (err) {
       this.handleError(req, res, err);
     }
