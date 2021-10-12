@@ -76,7 +76,11 @@ export class BaseRepository<T extends Document> implements Repository<T> {
    * @param projections
    * @param archived
    */
-  async byQuery(query: any, projections?: any, archived?: boolean | string) {
+  async byQuery(
+    query: any,
+    projections?: any,
+    archived?: boolean | string
+  ): Promise<T> {
     archived = this.convertArchived(archived);
     return new Promise((resolve, reject) => {
       this.model

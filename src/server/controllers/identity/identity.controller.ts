@@ -7,12 +7,13 @@ import {
 } from 'inversify-express-utils';
 import { inject } from 'inversify';
 import { Request, Response } from 'express';
-import { BaseController, InvalidPasswordError } from '../base';
+import { BaseController } from '../base';
 import { LoginDTO, SignupDTO } from './identity.dto';
 import { login, signup } from './identity.validator';
 import { default as Validator } from '@app/server/middlewares/validator';
 import { IIdentityRepository } from '@app/data/identity';
 import { IOC_TYPES } from '@app/common/config/ioc-types';
+import { LoginrateLimiterService } from '@app/server/services';
 
 @controller('/identity')
 export default class IdentityController extends BaseController {
@@ -58,9 +59,15 @@ export default class IdentityController extends BaseController {
         '+password'
       );
 
+      await LoginrateLimiterService.isUserLockedOut(identity.email);
+
       const isPasswordValid = await identity.isPasswordValid(body.password);
 
-      if (!isPasswordValid) throw new InvalidPasswordError();
+      if (!isPasswordValid) {
+        await LoginrateLimiterService.limit(identity.email);
+      }
+
+      await LoginrateLimiterService.reset(identity.email);
 
       const updatedIdentity = await this.identityRepo.update(identity._id, {
         last_login: new Date()

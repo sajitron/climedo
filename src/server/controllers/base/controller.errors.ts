@@ -18,8 +18,10 @@ export class ActionNotAllowedError extends ControllerError {
 }
 
 export class InvalidPasswordError extends ControllerError {
-  constructor() {
-    const errorMessage = `Invalid password entered`;
+  constructor(remainingTries: number) {
+    const errorMessage = `Invalid password entered. You have ${remainingTries} tr${
+      remainingTries > 1 ? 'ies' : 'y'
+    } left`;
     super(errorMessage);
 
     this.code = HttpStatus.BAD_REQUEST;
@@ -38,6 +40,16 @@ export class NotFoundError extends ControllerError {
 export class IdentityExistsError extends ControllerError {
   constructor() {
     const errorMessage = 'An identity with matching details exists';
+    super(errorMessage);
+
+    this.code = HttpStatus.BAD_REQUEST;
+  }
+}
+
+export class LockedOutError extends ControllerError {
+  constructor() {
+    const errorMessage =
+      "You can't proceed because your account has been blocked";
     super(errorMessage);
 
     this.code = HttpStatus.BAD_REQUEST;
