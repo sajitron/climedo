@@ -25,3 +25,12 @@ export class NotFoundError extends ControllerError {
     super(message, HttpStatus.NOT_FOUND);
   }
 }
+
+export class IdentityExistsError extends ControllerError {
+  constructor() {
+    const errorMessage = 'An identity with matching details exists';
+    super(errorMessage);
+
+    this.code = HttpStatus.BAD_REQUEST;
+  }
+}

@@ -35,7 +35,8 @@ const env = {
   mongodb_username: process.env.MONGODB_USERNAME,
   app_env: process.env.NODE_ENV || 'development',
   api_version: process.env.API_VERSION || '/api/v1',
-  service_name: process.env.SERVICE_NAME || 'climedo'
+  service_name: process.env.SERVICE_NAME || 'climedo',
+  salt_rounds: Number(process.env.SALT_ROUNDS) || 10
 };
 
 const missingVariables = requiredVariables.reduce(
