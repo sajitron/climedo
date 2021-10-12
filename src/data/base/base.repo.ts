@@ -78,14 +78,22 @@ export class BaseRepository<T extends Document> implements Repository<T> {
    */
   async byQuery(query: any, projections?: any, archived?: boolean | string) {
     archived = this.convertArchived(archived);
-    return this.model
-      .findOne({
-        ...query,
-        ...(!archived
-          ? { deleted_at: undefined }
-          : { deleted_at: { $ne: undefined } })
-      })
-      .select(projections);
+    return new Promise((resolve, reject) => {
+      this.model
+        .findOne({
+          ...query,
+          ...(!archived
+            ? { deleted_at: undefined }
+            : { deleted_at: { $ne: undefined } })
+        })
+        .select(projections)
+        .exec((err, result) => {
+          if (err) return reject(err);
+          if (!result)
+            return reject(new ModelNotFoundError(`${this.name} not found`));
+          resolve(result);
+        });
+    });
   }
 
   /**

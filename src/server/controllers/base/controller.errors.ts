@@ -17,6 +17,15 @@ export class ActionNotAllowedError extends ControllerError {
   }
 }
 
+export class InvalidPasswordError extends ControllerError {
+  constructor() {
+    const errorMessage = `Invalid password entered`;
+    super(errorMessage);
+
+    this.code = HttpStatus.BAD_REQUEST;
+  }
+}
+
 /**
  * Sets the HTTP status code to 404 `Not Found` when a queried item is not found.
  */

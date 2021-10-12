@@ -16,6 +16,7 @@ export interface Identity extends Model {
    */
   role: Role;
 
+  isPasswordValid: (plainText: string) => Promise<Boolean>;
   updatePassword: (plainText: string) => Promise<Identity>;
 }
 

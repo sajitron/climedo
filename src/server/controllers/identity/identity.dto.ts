@@ -4,8 +4,8 @@ import { Role } from '@app/data/identity';
  * Payload sent for a login request
  */
 export interface LoginDTO {
-  password: string;
   email: string;
+  password: string;
 }
 
 /**
@@ -18,7 +18,6 @@ export interface SignupDTO {
   dob: Date;
   role: Role;
   password: string;
-  last_login: Date;
 }
 
 /**

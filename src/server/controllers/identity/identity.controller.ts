@@ -7,9 +7,9 @@ import {
 } from 'inversify-express-utils';
 import { inject } from 'inversify';
 import { Request, Response } from 'express';
-import { BaseController } from '../base';
-import { SignupDTO } from './identity.dto';
-import { signup } from './identity.validator';
+import { BaseController, InvalidPasswordError } from '../base';
+import { LoginDTO, SignupDTO } from './identity.dto';
+import { login, signup } from './identity.validator';
 import { default as Validator } from '@app/server/middlewares/validator';
 import { IIdentityRepository } from '@app/data/identity';
 import { IOC_TYPES } from '@app/common/config/ioc-types';
@@ -38,6 +38,37 @@ export default class IdentityController extends BaseController {
       const data = { identity, token };
 
       this.handleSuccess(req, res, data);
+    } catch (err) {
+      this.handleError(req, res, err);
+    }
+  }
+
+  /**
+   * Logs the user in using their phone number and password
+   */
+  @httpPost('/login', Validator(login))
+  async login(
+    @request() req: Request,
+    @response() res: Response,
+    @requestBody() body: LoginDTO
+  ) {
+    try {
+      const identity = await this.identityRepo.byQuery(
+        { email: body.email },
+        '+password'
+      );
+
+      const isPasswordValid = await identity.isPasswordValid(body.password);
+
+      if (!isPasswordValid) throw new InvalidPasswordError();
+
+      const updatedIdentity = await this.identityRepo.update(identity._id, {
+        last_login: new Date()
+      });
+
+      const token = await this.identityRepo.generateToken(identity);
+
+      this.handleSuccess(req, res, { updatedIdentity, token });
     } catch (err) {
       this.handleError(req, res, err);
     }

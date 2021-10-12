@@ -82,7 +82,10 @@ export class IdentityRepository extends BaseRepository<Identity> {
    * @param body Body for creating a identity
    */
   async createAccount(body: SignupDTO) {
-    const identity = await this.create(body);
+    const identity = await this.create({
+      ...body,
+      last_login: new Date()
+    });
 
     return identity;
   }

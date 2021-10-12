@@ -26,6 +26,16 @@ IdentitySchema.pre('save', async function () {
 });
 
 /**
+ * Document method used to check if a plain text password is the same as a hashed password
+ * @param plainText Plain text to be hashed and set as the paswword
+ */
+IdentitySchema.method('isPasswordValid', async function (plainText: string) {
+  const identity = <Identity>this;
+  const result = await bcrypt.compare(plainText, identity.password);
+  return result;
+});
+
+/**
  * Document method used to change an identity's password.
  * @param plainText Plain text to be hashed and set as the paswword
  */

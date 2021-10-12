@@ -11,10 +11,5 @@ export const signup = joi.object({
 
 export const login = joi.object({
   email: joi.string().email().required(),
-  password: joi
-    .string()
-    .trim()
-    .regex(/[0-9]{4}/)
-    .length(4)
-    .required()
+  password: joi.string().trim().min(6).required()
 });
