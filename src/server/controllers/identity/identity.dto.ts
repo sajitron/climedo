@@ -18,6 +18,7 @@ export interface SignupDTO {
   dob: Date;
   role: Role;
   password: string;
+  last_login: Date;
 }
 
 /**

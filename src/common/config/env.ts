@@ -5,7 +5,7 @@ dotenv.config();
 /**
  * Environment variables required for all environments (dev, testing, staging, production)
  */
-const requiredVariables = ['port', 'redis_url'];
+const requiredVariables = ['port', 'redis_url', 'jwt_secret'];
 
 /**
  * Environment variables required for both staging and production
@@ -36,7 +36,9 @@ const env = {
   app_env: process.env.NODE_ENV || 'development',
   api_version: process.env.API_VERSION || '/api/v1',
   service_name: process.env.SERVICE_NAME || 'climedo',
-  salt_rounds: Number(process.env.SALT_ROUNDS) || 10
+  salt_rounds: Number(process.env.SALT_ROUNDS) || 10,
+  jwt_expiry: Number(process.env.JWT_EXPIRY) || 3600,
+  jwt_secret: process.env.JWT_SECRET
 };
 
 const missingVariables = requiredVariables.reduce(
