@@ -4,6 +4,7 @@ import {
   httpPut,
   request,
   requestBody,
+  requestParam,
   response
 } from 'inversify-express-utils';
 import { inject } from 'inversify';
@@ -90,10 +91,15 @@ export default class IdentityController extends BaseController {
   async updateUser(
     @request() req: Request,
     @response() res: Response,
-    @requestBody() body: UpdateIdentityDTO
+    @requestBody() body: UpdateIdentityDTO,
+    @requestParam() id: string
   ) {
     try {
       const update = { ...body };
+
+      if (req.user._id !== id) {
+        throw new ActionNotAllowedError('Only personal details can be updated');
+      }
 
       if (!Object.keys(update).length) {
         throw new ActionNotAllowedError('At least one field should be updated');
