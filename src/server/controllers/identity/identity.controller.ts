@@ -1,5 +1,6 @@
 import {
   controller,
+  httpGet,
   httpPost,
   httpPut,
   request,
@@ -113,6 +114,19 @@ export default class IdentityController extends BaseController {
 
       const user = await this.identityRepo.update(req.user._id, update);
 
+      this.handleSuccess(req, res, user);
+    } catch (err) {
+      this.handleError(req, res, err);
+    }
+  }
+
+  /**
+   * Gets an authenticated identity's profile
+   */
+  @httpGet('/', validateIdentity)
+  async getUser(@request() req: Request, @response() res: Response) {
+    try {
+      const user = await this.identityRepo.byID(req.user._id);
       this.handleSuccess(req, res, user);
     } catch (err) {
       this.handleError(req, res, err);
