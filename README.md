@@ -34,3 +34,13 @@
 - Run _docker build . -t <tagname>_ e.g `docker build . -t climedo`
 - Run _docker-compose up_ from the root directory.
 - Run _docker ps_ from the root directory (in another terminal window) to get the available port.
+
+## Testing
+
+  - Run _yarn test_ to run all tests
+
+
+## Applicant Details
+- <b>NAME</b>: ADAMS BANJO
+- <b>EMAIL</b>: folabibanjo@gmail.com
+- <b>POSITION</b>: Senior Backend Developer
